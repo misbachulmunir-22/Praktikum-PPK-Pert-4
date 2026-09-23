@@ -2,6 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Card } from "@/components/ui/Card";
+import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
+
 
 interface User {
   id: number;
@@ -317,7 +321,7 @@ const latestTransactions = transactions.slice(0, 5);
         {/* Financial Summary Cards */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           {/* Total Saldo Card */}
-          <div className="relative overflow-hidden rounded-2xl border border-indigo-500/30 bg-gradient-to-br from-indigo-900/50 via-slate-900 to-slate-900 p-5 shadow-xl">
+          <Card className="relative overflow-hidden rounded-2xl border border-indigo-500/30 bg-gradient-to-br from-indigo-900/50 via-slate-900 to-slate-900 p-5 shadow-xl">
             <div className="flex items-center justify-between text-indigo-400 mb-2">
               <span className="text-xs font-semibold uppercase tracking-wider">Saldo Saat Ini</span>
               <span className="rounded-full bg-indigo-500/20 px-2 py-0.5 text-[10px] font-bold text-indigo-300">
@@ -335,10 +339,10 @@ const latestTransactions = transactions.slice(0, 5);
                 <span className="text-rose-400 font-medium">Defisit (Hemat!)</span>
               )}
             </p>
-          </div>
+          </Card>
 
           {/* Total Pemasukan Card */}
-          <div className="rounded-2xl border border-emerald-500/20 bg-slate-900/80 p-5 shadow-lg">
+          <Card className="rounded-2xl border border-emerald-500/20 bg-slate-900/80 p-5 shadow-lg">
             <div className="flex items-center justify-between text-emerald-400 mb-2">
               <span className="text-xs font-semibold uppercase tracking-wider">Total Pemasukan</span>
               <span className="text-base">📈</span>
@@ -347,10 +351,10 @@ const latestTransactions = transactions.slice(0, 5);
               {showBalance ? formatIDR(summary.totalIncome) : "Rp ••••••••"}
             </div>
             <p className="text-[11px] text-slate-400 mt-2">Uang saku, beasiswa, freelance</p>
-          </div>
+          </Card>
 
           {/* Total Pengeluaran Card */}
-          <div className="rounded-2xl border border-rose-500/20 bg-slate-900/80 p-5 shadow-lg">
+          <Card className="rounded-2xl border border-rose-500/20 bg-slate-900/80 p-5 shadow-lg">
             <div className="flex items-center justify-between text-rose-400 mb-2">
               <span className="text-xs font-semibold uppercase tracking-wider">Total Pengeluaran</span>
               <span className="text-base">📉</span>
@@ -359,7 +363,7 @@ const latestTransactions = transactions.slice(0, 5);
               {showBalance ? formatIDR(summary.totalExpense) : "Rp ••••••••"}
             </div>
             <p className="text-[11px] text-slate-400 mt-2">Kos, makanan, buku, kuota</p>
-          </div>
+          </Card>
         </div>
 
         {/* Action & Filter Section */}
@@ -399,13 +403,13 @@ const latestTransactions = transactions.slice(0, 5);
           </div>
 
           {/* Add Transaction Button */}
-          <button
+          <Button
             onClick={openFormForCreate}
-            className="flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-semibold text-white shadow-lg shadow-indigo-600/30 transition hover:bg-indigo-500 active:scale-95"
+            className="flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-xs font-semibold shadow-lg shadow-indigo-600/30 active:scale-95"
           >
             <span>➕</span>
             <span>Tambah Transaksi Baru</span>
-          </button>
+          </Button>
         </div>
 
         {/* Transaction History List */}
@@ -562,16 +566,12 @@ const latestTransactions = transactions.slice(0, 5);
 
               {/* Title */}
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">
-                  Judul Transaksi
-                </label>
-                <input
+                <Input
                   type="text"
                   required
                   placeholder="Contoh: Uang Saku Bulanan / Makan Warteg"
                   value={formTitle}
                   onChange={(e) => setFormTitle(e.target.value)}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-2 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none"
                 />
               </div>
 
@@ -581,14 +581,13 @@ const latestTransactions = transactions.slice(0, 5);
                   <label className="block text-xs font-medium text-slate-300 mb-1">
                     Jumlah (Rp)
                   </label>
-                  <input
+                  <Input
                     type="number"
                     required
                     min="1"
                     placeholder="25000"
                     value={formAmount}
                     onChange={(e) => setFormAmount(e.target.value)}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-2 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none"
                   />
                 </div>
 
