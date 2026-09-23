@@ -125,3 +125,277 @@ export async function POST(request: Request) {
     );
   }
 }
+
+export async function PUT(request: Request) {
+  try {
+    const user = await getSessionUser();
+
+    if (!user) {
+      return NextResponse.json(
+        { error: "Anda belum login atau sesi telah berakhir." },
+        { status: 401 }
+      );
+    }
+
+
+    const {
+      id,
+      title,
+      amount,
+      type,
+      category,
+      description,
+      date,
+    } = await request.json();
+
+
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "ID transaksi diperlukan." },
+        { status: 400 }
+      );
+    }
+
+
+
+    // Cek apakah transaksi milik user yang sedang login
+    const existingTransaction =
+      await prisma.transaction.findFirst({
+        where: {
+          id: Number(id),
+          userId: user.id,
+        },
+      });
+
+
+
+    if (!existingTransaction) {
+      return NextResponse.json(
+        {
+          error:
+            "Transaksi tidak ditemukan atau bukan milik Anda.",
+        },
+        {
+          status: 403,
+        }
+      );
+    }
+
+
+
+    const updatedTransaction =
+      await prisma.transaction.update({
+
+        where: {
+          id: Number(id),
+        },
+
+
+        data: {
+
+          title: title.trim(),
+
+          amount:
+            parseFloat(amount),
+
+          type:
+            type as TransactionType,
+
+          category:
+            category?.trim() || "Lainnya",
+
+          description:
+            description?.trim() || null,
+
+          date:
+            date
+              ? new Date(date)
+              : existingTransaction.date,
+
+        },
+
+      });
+
+
+
+    return NextResponse.json({
+
+      message:
+        "Transaksi berhasil diperbarui.",
+
+      transaction:
+        updatedTransaction,
+
+    });
+
+
+
+  } catch (error) {
+
+    console.error(
+      "Update transaction error:",
+      error
+    );
+
+
+    return NextResponse.json(
+      {
+        error:
+          "Gagal memperbarui transaksi.",
+      },
+      {
+        status: 500,
+      }
+    );
+
+  }
+}
+
+
+
+
+
+
+export async function DELETE(request: Request) {
+
+  try {
+
+    const user =
+      await getSessionUser();
+
+
+
+    if (!user) {
+
+      return NextResponse.json(
+
+        {
+          error:
+            "Anda belum login atau sesi telah berakhir.",
+        },
+
+        {
+          status: 401,
+        }
+
+      );
+
+    }
+
+
+
+    const { id } =
+      await request.json();
+
+
+
+    if (!id) {
+
+      return NextResponse.json(
+
+        {
+          error:
+            "ID transaksi diperlukan.",
+        },
+
+        {
+          status: 400,
+        }
+
+      );
+
+    }
+
+
+
+
+    // Cek kepemilikan transaksi
+    const transaction =
+      await prisma.transaction.findFirst({
+
+        where: {
+
+          id: Number(id),
+
+          userId:
+            user.id,
+
+        },
+
+      });
+
+
+
+
+    if (!transaction) {
+
+      return NextResponse.json(
+
+        {
+          error:
+            "Transaksi tidak ditemukan atau bukan milik Anda.",
+        },
+
+        {
+          status: 403,
+        }
+
+      );
+
+    }
+
+
+
+
+    await prisma.transaction.delete({
+
+      where: {
+
+        id:
+          Number(id),
+
+      },
+
+    });
+
+
+
+
+
+    return NextResponse.json({
+
+      message:
+        "Transaksi berhasil dihapus.",
+
+    });
+
+
+
+  } catch (error) {
+
+
+    console.error(
+      "Delete transaction error:",
+      error
+    );
+
+
+
+    return NextResponse.json(
+
+      {
+        error:
+          "Gagal menghapus transaksi.",
+      },
+
+      {
+        status: 500,
+      }
+
+    );
+
+
+  }
+
+}

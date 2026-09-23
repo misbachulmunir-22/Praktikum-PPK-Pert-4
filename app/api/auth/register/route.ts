@@ -1,4 +1,4 @@
-import { hashPassword } from "@/lib/auth";
+import { createSession, hashPassword } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
@@ -19,7 +19,10 @@ export async function POST(request: Request) {
 
     if (!EMAIL_REGEX.test(trimmedEmail)) {
       return NextResponse.json(
-        { error: "Format email tidak valid. Gunakan format email yang benar (contoh: user@domain.com)." },
+        {
+          error:
+            "Format email tidak valid. Gunakan format email yang benar (contoh: user@domain.com).",
+        },
         { status: 400 }
       );
     }
@@ -37,7 +40,10 @@ export async function POST(request: Request) {
 
     if (existingUser) {
       return NextResponse.json(
-        { error: "Email sudah terdaftar. Silakan gunakan email lain atau masuk ke akun Anda." },
+        {
+          error:
+            "Email sudah terdaftar. Silakan gunakan email lain atau login.",
+        },
         { status: 400 }
       );
     }
@@ -52,8 +58,10 @@ export async function POST(request: Request) {
       },
     });
 
+    await createSession(user.id);
+
     return NextResponse.json({
-      message: "Registrasi akun berhasil. Silakan login.",
+      message: "Registrasi akun berhasil.",
       user: {
         id: user.id,
         name: user.name,
