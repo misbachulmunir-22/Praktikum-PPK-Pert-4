@@ -2,6 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Card } from "@/components/ui/Card";
+import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
+
 
 interface User {
   id: number;
@@ -399,13 +403,13 @@ const latestTransactions = transactions.slice(0, 5);
           </div>
 
           {/* Add Transaction Button */}
-          <button
+          <Button
             onClick={openFormForCreate}
-            className="flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-semibold text-white shadow-lg shadow-indigo-600/30 transition hover:bg-indigo-500 active:scale-95"
+            className="flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-xs font-semibold shadow-lg shadow-indigo-600/30 active:scale-95"
           >
             <span>➕</span>
             <span>Tambah Transaksi Baru</span>
-          </button>
+          </Button>
         </div>
 
         {/* Transaction History List */}
@@ -581,14 +585,13 @@ const latestTransactions = transactions.slice(0, 5);
                   <label className="block text-xs font-medium text-slate-300 mb-1">
                     Jumlah (Rp)
                   </label>
-                  <input
+                  <Input
                     type="number"
                     required
                     min="1"
                     placeholder="25000"
                     value={formAmount}
                     onChange={(e) => setFormAmount(e.target.value)}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-2 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none"
                   />
                 </div>
 
