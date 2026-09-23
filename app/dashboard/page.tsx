@@ -566,16 +566,12 @@ const latestTransactions = transactions.slice(0, 5);
 
               {/* Title */}
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">
-                  Judul Transaksi
-                </label>
-                <input
+                <Input
                   type="text"
                   required
                   placeholder="Contoh: Uang Saku Bulanan / Makan Warteg"
                   value={formTitle}
                   onChange={(e) => setFormTitle(e.target.value)}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-2 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none"
                 />
               </div>
 
