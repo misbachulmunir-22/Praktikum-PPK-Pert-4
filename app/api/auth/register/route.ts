@@ -1,6 +1,8 @@
-import { createSession, hashPassword } from "@/lib/auth";
+import { hashPassword } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(request: Request) {
   try {
@@ -13,6 +15,15 @@ export async function POST(request: Request) {
       );
     }
 
+    const trimmedEmail = email.toLowerCase().trim();
+
+    if (!EMAIL_REGEX.test(trimmedEmail)) {
+      return NextResponse.json(
+        { error: "Format email tidak valid. Gunakan format email yang benar (contoh: user@domain.com)." },
+        { status: 400 }
+      );
+    }
+
     if (password.length < 6) {
       return NextResponse.json(
         { error: "Password minimal 6 karakter." },
@@ -21,12 +32,12 @@ export async function POST(request: Request) {
     }
 
     const existingUser = await prisma.user.findUnique({
-      where: { email: email.toLowerCase().trim() },
+      where: { email: trimmedEmail },
     });
 
     if (existingUser) {
       return NextResponse.json(
-        { error: "Email sudah terdaftar. Silakan gunakan email lain atau login." },
+        { error: "Email sudah terdaftar. Silakan gunakan email lain atau masuk ke akun Anda." },
         { status: 400 }
       );
     }
@@ -36,20 +47,19 @@ export async function POST(request: Request) {
     const user = await prisma.user.create({
       data: {
         name: name.trim(),
-        email: email.toLowerCase().trim(),
+        email: trimmedEmail,
         password: hashedPassword,
       },
     });
 
-    await createSession(user.id);
-
     return NextResponse.json({
-      message: "Registrasi berhasil.",
+      message: "Registrasi akun berhasil. Silakan login.",
       user: {
         id: user.id,
         name: user.name,
         email: user.email,
       },
+      redirectTo: "/login",
     });
   } catch (error) {
     console.error("Register error:", error);
