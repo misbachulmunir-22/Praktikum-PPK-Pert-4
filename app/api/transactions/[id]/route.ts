@@ -3,11 +3,61 @@ import { prisma } from "@/lib/prisma";
 import { TransactionType } from "@prisma/client";
 import { NextResponse } from "next/server";
 
+// FR-08 Otorisasi: Lihat Single Transaksi
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    // 23. Pemeriksaan sesi pengguna yang sedang login
+    const user = await getSessionUser();
+
+    if (!user) {
+      return NextResponse.json(
+        { error: "Anda belum login atau sesi telah berakhir." },
+        { status: 401 }
+      );
+    }
+
+    const { id } = await params;
+    const transactionId = parseInt(id, 10);
+
+    if (isNaN(transactionId)) {
+      return NextResponse.json(
+        { error: "ID Transaksi tidak valid." },
+        { status: 400 }
+      );
+    }
+
+    const transaction = await prisma.transaction.findUnique({
+      where: { id: transactionId },
+    });
+
+    // 24. Memverifikasi bahwa userId data transaksi sama dengan userId pengguna yang login
+    if (!transaction || transaction.userId !== user.id) {
+      return NextResponse.json(
+        { error: "Transaksi tidak ditemukan atau Anda tidak memiliki akses ke data ini." },
+        { status: 403 }
+      );
+    }
+
+    return NextResponse.json({ transaction });
+  } catch (error) {
+    console.error("Get transaction error:", error);
+    return NextResponse.json(
+      { error: "Gagal mengambil data transaksi." },
+      { status: 500 }
+    );
+  }
+}
+
+// FR-08 Otorisasi: Ubah / Update Transaksi
 export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // 23. Pemeriksaan sesi pengguna yang sedang login
     const user = await getSessionUser();
 
     if (!user) {
@@ -31,10 +81,11 @@ export async function PUT(
       where: { id: transactionId },
     });
 
+    // 24. Memverifikasi bahwa userId data transaksi sama dengan userId pengguna yang login
     if (!existingTransaction || existingTransaction.userId !== user.id) {
       return NextResponse.json(
-        { error: "Transaksi tidak ditemukan atau Anda tidak memiliki akses." },
-        { status: 404 }
+        { error: "Transaksi tidak ditemukan atau Anda tidak memiliki hak akses untuk mengubah data ini." },
+        { status: 403 }
       );
     }
 
@@ -80,11 +131,13 @@ export async function PUT(
   }
 }
 
+// FR-08 Otorisasi: Hapus Transaksi
 export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // 23. Pemeriksaan sesi pengguna yang sedang login
     const user = await getSessionUser();
 
     if (!user) {
@@ -108,10 +161,11 @@ export async function DELETE(
       where: { id: transactionId },
     });
 
+    // 24. Memverifikasi bahwa userId data transaksi sama dengan userId pengguna yang login
     if (!existingTransaction || existingTransaction.userId !== user.id) {
       return NextResponse.json(
-        { error: "Transaksi tidak ditemukan atau Anda tidak memiliki akses." },
-        { status: 404 }
+        { error: "Transaksi tidak ditemukan atau Anda tidak memiliki hak akses untuk menghapus data ini." },
+        { status: 403 }
       );
     }
 
