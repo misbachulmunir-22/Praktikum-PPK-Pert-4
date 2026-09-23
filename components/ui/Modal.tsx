@@ -51,7 +51,7 @@ export function Modal({
               aria-label="Tutup modal"
               className="rounded-lg p-2 text-slate-400 transition hover:bg-slate-800 hover:text-white"
             >
-              ✕
+              &times;
             </button>
           </div>
         )}
