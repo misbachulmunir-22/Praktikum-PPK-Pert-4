@@ -127,6 +127,8 @@ export default function DashboardPage() {
     }
   };
 
+const latestTransactions = transactions.slice(0, 5);
+
   const handleTogglePreference = async () => {
     const newValue = !showBalance;
     setShowBalance(newValue);
@@ -431,7 +433,7 @@ export default function DashboardPage() {
             </div>
           ) : (
             <div className="divide-y divide-slate-800/60">
-              {transactions.map((tx) => (
+              {latestTransactions.map((tx) => (
                 <div
                   key={tx.id}
                   className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between transition hover:bg-slate-800/40"
