@@ -105,16 +105,6 @@
 
 6. Buka [http://localhost:3000](http://localhost:3000) di browser.
 
-## 👥 Tim Pengembang
-
-Proyek ini dikembangkan oleh 1 Project Manager dan 3 Programmer dengan pembagian modul:
-
-| Programmer | Modul | Tanggung Jawab |
-|---|---|---|
-| Programmer 1 | Autentikasi & Sesi | Register, Login, Session, Cookie, Authorization, Logout |
-| Programmer 2 | Dashboard & Layout | Dashboard, layout & komponen UI bersama |
-| Programmer 3 | Manajemen Transaksi | CRUD transaksi & filter transaksi |
-
 ## 📄 Lisensi
 
 Proyek ini dibuat untuk keperluan tugas mata kuliah.
