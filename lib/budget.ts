@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+import { prisma } from "@/lib/prisma";
+
+>>>>>>> origin/feature/fr-11-budget-summary
 export interface BudgetPeriod {
   month: number; // 1 - 12
   year: number;
@@ -35,3 +40,55 @@ export function periodFromSearchParams(searchParams: URLSearchParams): BudgetPer
 
   return parsePeriod(month, year);
 }
+<<<<<<< HEAD
+=======
+
+/**
+ * Rentang tanggal satu bulan [start, end).
+ * Tanggal transaksi disimpan sebagai tengah malam UTC (new Date("YYYY-MM-DD")),
+ * sehingga batas bulan juga dihitung dengan UTC.
+ */
+export function getMonthRange({ month, year }: BudgetPeriod) {
+  return {
+    start: new Date(Date.UTC(year, month - 1, 1)),
+    end: new Date(Date.UTC(year, month, 1)),
+  };
+}
+
+/**
+ * FR-11: ringkasan budget satu bulan milik satu pengguna.
+ * - budget       : nominal budget bulan tsb (null jika belum ditetapkan)
+ * - totalExpense : total pengeluaran (EXPENSE) pada bulan tsb
+ * - remaining    : budget - totalExpense (negatif jika melebihi budget, null jika belum ada budget)
+ */
+export async function getBudgetSummary(userId: number, period: BudgetPeriod) {
+  const { start, end } = getMonthRange(period);
+
+  const [budget, expense] = await Promise.all([
+    prisma.budget.findUnique({
+      where: {
+        userId_month_year: { userId, month: period.month, year: period.year },
+      },
+    }),
+    prisma.transaction.aggregate({
+      _sum: { amount: true },
+      where: {
+        userId,
+        type: "EXPENSE",
+        date: { gte: start, lt: end },
+      },
+    }),
+  ]);
+
+  const totalExpense = expense._sum.amount ?? 0;
+  const budgetAmount = budget ? budget.amount : null;
+
+  return {
+    period,
+    hasBudget: budget !== null,
+    budget: budgetAmount,
+    totalExpense,
+    remaining: budgetAmount === null ? null : budgetAmount - totalExpense,
+  };
+}
+>>>>>>> origin/feature/fr-11-budget-summary

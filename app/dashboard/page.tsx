@@ -5,7 +5,11 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+<<<<<<< HEAD
 import BudgetIndicator from "@/components/BudgetIndicator";
+=======
+import { BudgetSummary } from "@/components/BudgetSummary";
+>>>>>>> origin/feature/fr-11-budget-summary
 
 
 interface User {
@@ -56,7 +60,10 @@ export default function DashboardPage() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [showBalance, setShowBalance] = useState(true);
+<<<<<<< HEAD
   const [monthlyBudget, setMonthlyBudget] = useState<number>(2000000);
+=======
+>>>>>>> origin/feature/fr-11-budget-summary
 
   // Dashboard states
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -100,9 +107,12 @@ export default function DashboardPage() {
       if (res.ok && data.user) {
         setUser(data.user);
         setShowBalance(data.preferences?.showBalance ?? true);
+<<<<<<< HEAD
         if (data.preferences?.monthlyBudget) {
           setMonthlyBudget(data.preferences.monthlyBudget);
         }
+=======
+>>>>>>> origin/feature/fr-11-budget-summary
       } else {
         // Protected route: Redirect to /login if unauthenticated
         router.push("/login");
@@ -152,6 +162,7 @@ const latestTransactions = transactions.slice(0, 5);
     }
   };
 
+<<<<<<< HEAD
   const handleBudgetChange = async (newBudget: number) => {
     setMonthlyBudget(newBudget);
     try {
@@ -165,6 +176,8 @@ const latestTransactions = transactions.slice(0, 5);
     }
   };
 
+=======
+>>>>>>> origin/feature/fr-11-budget-summary
   const handleLogout = async () => {
     try {
       await fetch("/api/auth/logout", { method: "POST" });
@@ -384,6 +397,7 @@ const latestTransactions = transactions.slice(0, 5);
           </Card>
         </div>
 
+<<<<<<< HEAD
         {/* Indikator Penggunaan Budget (FR-12) */}
         <BudgetIndicator
           budget={monthlyBudget}
@@ -392,6 +406,10 @@ const latestTransactions = transactions.slice(0, 5);
           onBudgetChange={handleBudgetChange}
           periodLabel="Bulan Ini"
         />
+=======
+        {/* FR-10 & FR-11: Set budget + ringkasan budget bulanan */}
+        <BudgetSummary showAmounts={showBalance} refreshKey={transactions} />
+>>>>>>> origin/feature/fr-11-budget-summary
 
         {/* Action & Filter Section */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-t border-slate-800 pt-6">
