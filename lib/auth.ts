@@ -89,8 +89,10 @@ export async function destroySession() {
 export async function getPreferences() {
   const cookieStore = await cookies();
   const showBalanceVal = cookieStore.get(BALANCE_PREF_COOKIE)?.value;
+  const budgetVal = cookieStore.get("monthly_budget")?.value;
   return {
     showBalance: showBalanceVal !== "false", // default to true
+    monthlyBudget: budgetVal && !isNaN(parseFloat(budgetVal)) ? parseFloat(budgetVal) : 2000000,
   };
 }
 
