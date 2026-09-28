@@ -1,7 +1,7 @@
 ## Pembagian SRS Programmer 
-Programmer 1 : Najib
-Programmer 2 : Misbach
-Programmer 3 : Putri
+- Programmer 1 : Najib
+- Programmer 2 : Misbach
+- Programmer 3 : Putri
 
 ## Daftar Kebutuhan Fungsional
 
