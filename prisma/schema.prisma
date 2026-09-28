@@ -46,8 +46,6 @@ model Transaction {
 
   userId      Int
   user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-<<<<<<< HEAD
-=======
 }
 
 model MonthlyBudget {
@@ -62,5 +60,4 @@ model MonthlyBudget {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, year, month])
->>>>>>> origin/feature/budgetalert
 }

@@ -29,12 +29,12 @@ export async function GET(request: Request) {
     }
 
     // Selalu difilter berdasarkan userId dari sesi: pengguna hanya bisa melihat budget miliknya
-    const budget = await prisma.budget.findUnique({
+    const budget = await prisma.monthlyBudget.findUnique({
       where: {
-        userId_month_year: {
+        userId_year_month: {
           userId: user.id,
-          month: period.month,
           year: period.year,
+          month: period.month,
         },
       },
     });
@@ -102,19 +102,19 @@ export async function PUT(request: Request) {
     }
 
     // Satu pengguna hanya punya satu budget per (bulan, tahun) -> upsert pada unique key
-    const budget = await prisma.budget.upsert({
+    const budget = await prisma.monthlyBudget.upsert({
       where: {
-        userId_month_year: {
+        userId_year_month: {
           userId: user.id,
-          month: period.month,
           year: period.year,
+          month: period.month,
         },
       },
       update: { amount },
       create: {
         userId: user.id,
-        month: period.month,
         year: period.year,
+        month: period.month,
         amount,
       },
     });

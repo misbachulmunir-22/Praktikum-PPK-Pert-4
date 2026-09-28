@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-=======
 import { prisma } from "@/lib/prisma";
 
->>>>>>> origin/feature/fr-11-budget-summary
 export interface BudgetPeriod {
   month: number; // 1 - 12
   year: number;
@@ -40,8 +37,6 @@ export function periodFromSearchParams(searchParams: URLSearchParams): BudgetPer
 
   return parsePeriod(month, year);
 }
-<<<<<<< HEAD
-=======
 
 /**
  * Rentang tanggal satu bulan [start, end).
@@ -65,9 +60,9 @@ export async function getBudgetSummary(userId: number, period: BudgetPeriod) {
   const { start, end } = getMonthRange(period);
 
   const [budget, expense] = await Promise.all([
-    prisma.budget.findUnique({
+    prisma.monthlyBudget.findUnique({
       where: {
-        userId_month_year: { userId, month: period.month, year: period.year },
+        userId_year_month: { userId, year: period.year, month: period.month },
       },
     }),
     prisma.transaction.aggregate({
@@ -91,4 +86,4 @@ export async function getBudgetSummary(userId: number, period: BudgetPeriod) {
     remaining: budgetAmount === null ? null : budgetAmount - totalExpense,
   };
 }
->>>>>>> origin/feature/fr-11-budget-summary
+
