@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import BudgetIndicator from "@/components/BudgetIndicator";
 
 interface User {
   id: number;
@@ -48,6 +49,7 @@ export default function Home() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [showBalance, setShowBalance] = useState(true);
+  const [monthlyBudget, setMonthlyBudget] = useState<number>(2000000);
 
   // Auth form states
   const [authMode, setAuthMode] = useState<"login" | "register">("login");
@@ -99,6 +101,9 @@ export default function Home() {
       if (res.ok && data.user) {
         setUser(data.user);
         setShowBalance(data.preferences?.showBalance ?? true);
+        if (data.preferences?.monthlyBudget) {
+          setMonthlyBudget(data.preferences.monthlyBudget);
+        }
       } else {
         setUser(null);
       }
@@ -142,6 +147,19 @@ export default function Home() {
       });
     } catch (err) {
       console.error("Gagal mengupdate preferensi:", err);
+    }
+  };
+
+  const handleBudgetChange = async (newBudget: number) => {
+    setMonthlyBudget(newBudget);
+    try {
+      await fetch("/api/preferences", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key: "monthly_budget", value: newBudget }),
+      });
+    } catch (err) {
+      console.error("Gagal mengupdate preferensi budget:", err);
     }
   };
 
@@ -560,6 +578,15 @@ export default function Home() {
             <p className="text-[11px] text-slate-400 mt-2">Kos, makanan, buku, kuota</p>
           </div>
         </div>
+
+        {/* Indikator Penggunaan Budget (FR-12) */}
+        <BudgetIndicator
+          budget={monthlyBudget}
+          totalExpense={summary.totalExpense}
+          showAmount={showBalance}
+          onBudgetChange={handleBudgetChange}
+          periodLabel="Bulan Ini"
+        />
 
         {/* Action & Filter Section */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-t border-slate-800 pt-6">
